@@ -61,7 +61,7 @@ namespace ZombiePong
 
             paddle1 = new Sprite(new Vector2(20, 20), spritesheet, new Rectangle(0, 516, 25, 150), Vector2.Zero);
             paddle2 = new Sprite(new Vector2(970, 20), spritesheet, new Rectangle(32, 516, 25, 150), Vector2.Zero);
-            ball = new Sprite(new Vector2(700, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(30, 0));
+            ball = new Sprite(new Vector2(500, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(200, 20));
 
             SpawnZombie(new Vector2(400, 400), new Vector2(-20, 0));
         }
@@ -98,8 +98,29 @@ namespace ZombiePong
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            if (ball.Location.Y > 5)
+                
             // TODO: Add your update logic here
             ball.Update(gameTime);
+            MouseState MS = Mouse.GetState();
+            paddle1.Location = new Vector2(paddle1.Location.X, MS.Y);
+            paddle2.Location = new Vector2(paddle2.Location.X, ball.Center.Y - 90);
+            if (ball.Location.Y > 734 || ball.Location.Y < 5)
+                ball.Velocity = ball.Velocity * new Vector2(1, -1);
+            if (ball.Location.X > 934 || ball.Location.X < 25)
+                ball.Velocity = ball.Velocity * new Vector2(-1, 1);
+
+            if (ball.BoundingBoxRect.Left < paddle1.BoundingBoxRect.Right &&
+                ball.BoundingBoxRect.Bottom < paddle1.BoundingBoxRect.Top &&
+                ball.BoundingBoxRect.Top > paddle1.BoundingBoxRect.Bottom
+                )
+                ball.Velocity = ball.Velocity * new Vector2(-1, 1);
+
+            if (ball.BoundingBoxRect.Left < paddle2.BoundingBoxRect.Right &&
+                ball.BoundingBoxRect.Bottom < paddle2.BoundingBoxRect.Top &&
+                ball.BoundingBoxRect.Top > paddle2.BoundingBoxRect.Bottom
+                )
+                ball.Velocity = ball.Velocity * new Vector2(-1, 1);
 
             for (int i = 0; i < zombies.Count; i++)
             {
