@@ -87,20 +87,27 @@ namespace ZombiePong
             MouseState ms = Mouse.GetState();
             paddle1.Location = new Vector2(paddle1.Location.X, ms.Y);
 
+            // When ball goes past P1 paddle, reset ball location so it goes back towards you
             if (ball.Location.X < -20)
                 ball.Location = new Vector2(700, 350);
+
+            // When ball goes past P2 paddle, reset ball location so it goes back towards him
             if (ball.Location.X > 1044)
-                ball.Location = new Vector2(400, 350); 
+                ball.Location = new Vector2(400, 350);
+
+            // Ball cannot go past the top/bottom boundaries
             if (ball.Location.Y >= height - 16)
                 ball.Velocity = new Vector2(ball.Velocity.X, ball.Velocity.Y * -1);
             if (ball.Location.Y <= 0)
                 ball.Velocity = new Vector2(ball.Velocity.X, ball.Velocity.Y * -1);
+
+            // P1 can't go past the top/bottom boundaries
             if (paddle1.Location.Y <= 0)
                 paddle1.Location = new Vector2(paddle1.Location.X, 0);
             if (paddle1.Location.Y >= height)
                 paddle1.Location = new Vector2(paddle1.Location.X, height);
-            
-            //paddle2.Location = new Vector2(paddle2.Location.X, ball.Center.Y);
+
+            paddle2.Location = new Vector2(paddle2.Location.X, ball.Center.Y);
             if (ball.IsBoxColliding(paddle1.BoundingBoxRect) && ball.Location.Y != paddle1.Center.Y)
             {
                 ball.Velocity = new Vector2(ball.Velocity.X * -1.000000000036f, (float)Math.Cos(ball.Location.Y - paddle1.Center.Y) * -100);
@@ -111,18 +118,7 @@ namespace ZombiePong
                 ball.Velocity = new Vector2(ball.Velocity.X * -1.000000000036f, (float)Math.Cos(ball.Location.Y - paddle2.Center.Y) * -100);
                 Window.Title = ("ball Y: " + ball.Location.Y + " \t paddle2 Y: " + paddle2.Center.Y);
             }
-            
-            /*PADDLE 2 AI*/
-            //if (paddle2.Location.Y <= 0)
-            //    paddle2.Location = new Vector2(paddle2.Location.X, 0);
-            //if (paddle2.Location.Y >= height)
-            //    paddle2.Location = new Vector2(paddle2.Location.X, height);
-            paddle2.Location = new Vector2(paddle2.Location.X, ms.Y);
 
-            //if (ball.Location.X <= 0)
-            // ball.Velocity = ball.Velocity * -1;
-            // TODO: Add your update logic here
-            
             ball.Update(gameTime);
             
             for (int i = 0; i < zombies.Count; i++)
