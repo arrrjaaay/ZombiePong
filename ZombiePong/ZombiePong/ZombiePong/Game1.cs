@@ -20,6 +20,7 @@ namespace ZombiePong
         Texture2D background, spritesheet;
         Sprite paddle1, paddle2, ball;
         Random rand = new Random();
+        public int p1score, p2score;
         const int width = 1024;
         const int height = 768;
         List<Sprite> zombies = new List<Sprite>();
@@ -30,6 +31,8 @@ namespace ZombiePong
             graphics.PreferredBackBufferWidth = 1024;
             graphics.PreferredBackBufferHeight = 768;
             graphics.ApplyChanges();
+            p1score = 0;
+            p2score = 0;
         }
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -89,11 +92,17 @@ namespace ZombiePong
 
             // When ball goes past P1 paddle, reset ball location so it goes back towards you
             if (ball.Location.X < -20)
+            {
                 ball.Location = new Vector2(700, 350);
+                p2score++;
+            }
 
             // When ball goes past P2 paddle, reset ball location so it goes back towards him
             if (ball.Location.X > 1044)
+            {
                 ball.Location = new Vector2(400, 350);
+                p1score++;
+            }
 
             // Ball cannot go past the top/bottom boundaries
             if (ball.Location.Y >= height - 16)
@@ -111,13 +120,15 @@ namespace ZombiePong
             if (ball.IsBoxColliding(paddle1.BoundingBoxRect) && ball.Location.Y != paddle1.Center.Y)
             {
                 ball.Velocity = new Vector2(ball.Velocity.X * -1.000000000036f, (float)Math.Cos(ball.Location.Y - paddle1.Center.Y) * -100);
-                Window.Title = ("ball Y: " + ball.Location.Y + " \t paddle1 Y: " + paddle1.Center.Y);
             }
             if (ball.IsBoxColliding(paddle2.BoundingBoxRect) && ball.Location.Y != paddle2.Center.Y)
             {
                 ball.Velocity = new Vector2(ball.Velocity.X * -1.000000000036f, (float)Math.Cos(ball.Location.Y - paddle2.Center.Y) * -100);
-                Window.Title = ("ball Y: " + ball.Location.Y + " \t paddle2 Y: " + paddle2.Center.Y);
             }
+
+            Window.Title = ("P1 Score: " + p1score + " | " + "P2 Score: " + p2score);
+            if (p2score == 5)
+                spriteBatch.End();
 
             ball.Update(gameTime);
             
