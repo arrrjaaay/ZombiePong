@@ -59,6 +59,9 @@ namespace ZombiePong
             paddle2 = new Sprite(new Vector2(970, 20), spritesheet, new Rectangle(32, 516, 25, 150), Vector2.Zero);
             ball = new Sprite(new Vector2(700, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(-300, 0));
             SpawnZombie(new Vector2(400, 400), new Vector2(-20, 0));
+
+            Song melee = Content.Load<Song>(@"Sound\Melee - Battlefield");
+            MediaPlayer.Play(melee);
         }
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -70,12 +73,16 @@ namespace ZombiePong
         }
         public void SpawnZombie(Vector2 location, Vector2 velocity)
         {
-            Sprite zombie = new Sprite(location, spritesheet, new Rectangle(0, 25, 160, 150), velocity);
-            for (int i = 1; i < 10; i++)
+            Sprite marth = new Sprite(location, spritesheet, new Rectangle(0, 25, 160, 150), velocity);
+            for (int i = 1; i < 2; i++)
             {
-                zombie.AddFrame(new Rectangle(i * 165, 25, 160, 150));
+                marth.AddFrame(new Rectangle(i * 0, 19, 187, 170));
+                marth.AddFrame(new Rectangle(i * 218, 19, 187, 170));
+                marth.AddFrame(new Rectangle(i * 456, 19, 200, 164));
+                marth.AddFrame(new Rectangle(i * 696, 28, 195, 147));
+                marth.AddFrame(new Rectangle(i * 935, 16, 195, 147));
             }
-            zombies.Add(zombie);
+            zombies.Add(marth);
         }
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -116,7 +123,7 @@ namespace ZombiePong
             if (paddle1.Location.Y >= height)
                 paddle1.Location = new Vector2(paddle1.Location.X, height);
 
-            paddle2.Location = new Vector2(paddle2.Location.X, ball.Center.Y);
+            paddle2.Location = new Vector2(paddle2.Location.X, rand.Next(0, 720));
             if (ball.IsBoxColliding(paddle1.BoundingBoxRect) && ball.Location.Y != paddle1.Center.Y)
             {
                 ball.Velocity = new Vector2(ball.Velocity.X * -1.000000000036f, (float)Math.Cos(ball.Location.Y - paddle1.Center.Y) * -100);
@@ -127,18 +134,53 @@ namespace ZombiePong
             }
 
             Window.Title = ("P1 Score: " + p1score + " | " + "P2 Score: " + p2score);
-            if (p2score == 5)
-                spriteBatch.End();
 
             ball.Update(gameTime);
-            
+
             for (int i = 0; i < zombies.Count; i++)
             {
                 zombies[i].Update(gameTime);
                 // Zombie logic goes here..
-                zombies[i].FlipHorizontal = false;
+                //    zombies[i].FlipHorizontal = false;
+                //    zombies[i].FlipHorizontal = zombies[i].Velocity.X > 0;
+
+                //    if (zombies[i].Location.X <= 0)
+                //    {
+                //        zombies[i].Velocity = new Vector2(40, 0);
+                //    }
+                //    if (zombies[i].Location.X > 900)
+                //    {
+                //        zombies[i].Velocity = new Vector2(-40, 0);
+                //    }
+
+
+                //    zombies[i].CollisionRadius = 40;
+                //    if (zombies[i].IsCircleColliding(ball.Center, 10))
+                //    {
+                //        zombies.RemoveAt(i);
+                //        ball.Velocity *= -1;
+                //        for (int marth = 0; marth < 5; marth++)
+                //        {
+                //            Vector2 location = new Vector2(700, 350);
+                //            Vector2 velocity = new Vector2(40, 0);
+
+                //            if (zombies.Count < 10)
+                //                SpawnZombie(location, velocity);
+
+
+                //        continue;
+                //    }
+
+                //    if (zombies[i].Location.X < 0)
+                //    {
+                //        zombies[i].FlipHorizontal = true;
+                //    }
+
+                //}
+
+                //}
+                base.Update(gameTime);
             }
-            base.Update(gameTime);
         }
         /// <summary>
         /// This is called when the game should draw itself.
