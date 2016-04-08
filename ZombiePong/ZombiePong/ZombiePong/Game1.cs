@@ -57,8 +57,8 @@ namespace ZombiePong
             spritesheet = Content.Load<Texture2D>("spritesheet");
             paddle1 = new Sprite(new Vector2(20, 20), spritesheet, new Rectangle(0, 516, 25, 150), Vector2.Zero);
             paddle2 = new Sprite(new Vector2(970, 20), spritesheet, new Rectangle(32, 516, 25, 150), Vector2.Zero);
-            ball = new Sprite(new Vector2(700, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(-300, 0));
-            SpawnZombie(new Vector2(400, 400), new Vector2(-20, 0));
+            ball = new Sprite(new Vector2(700, 350), spritesheet, new Rectangle(76, 510, 40, 40), new Vector2(-500, 0));
+            SpawnZombie(new Vector2(400, 400), new Vector2(-500, 0));
 
             Song melee = Content.Load<Song>(@"Sound\Melee - Battlefield");
             MediaPlayer.Play(melee);
@@ -101,6 +101,7 @@ namespace ZombiePong
             if (ball.Location.X < -20)
             {
                 ball.Location = new Vector2(700, 350);
+                ball.Velocity *= 0.75f;
                 p2score++;
             }
 
@@ -108,6 +109,7 @@ namespace ZombiePong
             if (ball.Location.X > 1044)
             {
                 ball.Location = new Vector2(400, 350);
+                ball.Velocity *= 0.75f;
                 p1score++;
             }
 
@@ -126,11 +128,11 @@ namespace ZombiePong
             paddle2.Location = new Vector2(paddle2.Location.X, rand.Next(0, 720));
             if (ball.IsBoxColliding(paddle1.BoundingBoxRect) && ball.Location.Y != paddle1.Center.Y)
             {
-                ball.Velocity = new Vector2(ball.Velocity.X * -1.000000000036f, (float)Math.Cos(ball.Location.Y - paddle1.Center.Y) * -100);
+                ball.Velocity = new Vector2(ball.Velocity.X * -1.09f, (float)Math.Cos(ball.Location.Y - paddle1.Center.Y) * -100);
             }
             if (ball.IsBoxColliding(paddle2.BoundingBoxRect) && ball.Location.Y != paddle2.Center.Y)
             {
-                ball.Velocity = new Vector2(ball.Velocity.X * -1.000000000036f, (float)Math.Cos(ball.Location.Y - paddle2.Center.Y) * -100);
+                ball.Velocity = new Vector2(ball.Velocity.X * -1.09f, (float)Math.Cos(ball.Location.Y - paddle2.Center.Y) * -100);
             }
 
             Window.Title = ("P1 Score: " + p1score + " | " + "P2 Score: " + p2score);
@@ -141,46 +143,48 @@ namespace ZombiePong
             {
                 zombies[i].Update(gameTime);
                 // Zombie logic goes here..
-                //    zombies[i].FlipHorizontal = false;
-                //    zombies[i].FlipHorizontal = zombies[i].Velocity.X > 0;
+                zombies[i].FlipHorizontal = false;
+                zombies[i].FlipHorizontal = zombies[i].Velocity.X > 0;
 
-                //    if (zombies[i].Location.X <= 0)
-                //    {
-                //        zombies[i].Velocity = new Vector2(40, 0);
-                //    }
-                //    if (zombies[i].Location.X > 900)
-                //    {
-                //        zombies[i].Velocity = new Vector2(-40, 0);
-                //    }
-
-
-                //    zombies[i].CollisionRadius = 40;
-                //    if (zombies[i].IsCircleColliding(ball.Center, 10))
-                //    {
-                //        zombies.RemoveAt(i);
-                //        ball.Velocity *= -1;
-                //        for (int marth = 0; marth < 5; marth++)
-                //        {
-                //            Vector2 location = new Vector2(700, 350);
-                //            Vector2 velocity = new Vector2(40, 0);
-
-                //            if (zombies.Count < 10)
-                //                SpawnZombie(location, velocity);
+                if (zombies[i].Location.X <= 0)
+                {
+                    zombies[i].Velocity = new Vector2(500, 0);
+                }
+                if (zombies[i].Location.X > 900)
+                {
+                    zombies[i].Velocity = new Vector2(-500, 0);
+                }
 
 
-                //        continue;
-                //    }
+                zombies[i].CollisionRadius = 40;
+                if (zombies[i].IsCircleColliding(ball.Center, 10))
+                {
+                    zombies.RemoveAt(i);
+                    ball.Velocity *= -1;
 
-                //    if (zombies[i].Location.X < 0)
-                //    {
-                //        zombies[i].FlipHorizontal = true;
-                //    }
+                    for (int marth = 0; marth < 2; marth++)
+                    {
+                        Vector2 location = new Vector2(rand.Next(500, 500));
+                        Vector2 velocity = new Vector2(-500, 0);
 
-                //}
+                        if (zombies.Count < 10)
+                            SpawnZombie(location, velocity);
 
-                //}
-                base.Update(gameTime);
+                    }
+
+
+                    continue;
+                }
+
+                if (zombies[i].Location.X < 0)
+                {
+                    zombies[i].FlipHorizontal = true;
+                }
+
             }
+
+
+
         }
         /// <summary>
         /// This is called when the game should draw itself.
